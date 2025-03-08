@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const app = express();
 
 app.use(bodyParser.json()); // Para manejar JSON
-app.use(bodyParser.xml());  // Para manejar XML (necesitas el paquete `body-parser-xml`)
 
 const MASTER_KEY = 'e6fIguVkyG5xtT3BYGMI4rfm9iVt24YJ'; // Clave maestra proporcionada por Global Foodsoft
 
@@ -16,7 +15,7 @@ app.post('/integration/orderingsystem', (req, res) => {
     return res.status(403).json({ error: 'Invalid authorization token' });
   }
 
-  const order = req.body; // Datos del pedido
+  const order = req.body; // Datos del pedido en JSON
 
   // Verificar si el pedido ya fue procesado
   if (isOrderProcessed(order.order_id)) {
