@@ -7,7 +7,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // Clave maestra proporcionada por Global Foodsoft
-const MASTER_KEY = 'e6fIguVkyG5xtT3BYGMI4rfm9iVt24YJ'; // Reemplaza con tu clave maestra
+const MASTER_KEY = 'K6N7syrnfKRECLPf4knJQeBcLuYJJpgfv'; // Reemplaza con tu clave maestra
 
 // Endpoint para recibir notificaciones de nuevos pedidos
 app.post('/api/new-order', (req, res) => {
