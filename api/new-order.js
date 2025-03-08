@@ -7,11 +7,15 @@ module.exports = async (req, res) => {
 
   const url = 'https://pos.globalfoodsoft.com/pos/order';
   const headers = {
-    'Authorization': req.headers['authorization'] || 'E6rNYi3arcDrXre3j', // Usa el token recibido o el default
+    'Authorization': req.headers['authorization'] || '2poftdDnKvf3AhQTpIbtJDynhaO8rLCN', // Token proporcionado
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Glf-Api-Version': '2',
+    'Server-Key': 'K6N7syrnfKRECLPf4knJQeBcLuYJJpgfv', // Server-Key requerido
   };
+
+  console.log('Enviando solicitud con headers:', headers); // Depuración
+  console.log('Cuerpo de la solicitud:', req.body); // Depuración
 
   try {
     const response = await fetch(url, {
@@ -20,9 +24,16 @@ module.exports = async (req, res) => {
       body: JSON.stringify(req.body),
     });
     const data = await response.text();
+    console.log('Respuesta de la API:', data); // Depuración
     res.status(response.status).send(data);
   } catch (error) {
-    console.error('Error en el servidor:', error); // Añade esto para ver el error en los logs de Vercel
-    res.status(500).json({ error: { code: '500', message: 'A server error has occurred', details: error.message } });
+    console.error('Error en el servidor:', error);
+    res.status(500).json({ 
+      error: { 
+        code: '500', 
+        message: 'A server error has occurred', 
+        details: error.message 
+      } 
+    });
   }
 };
