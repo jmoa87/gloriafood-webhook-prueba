@@ -1,39 +1,54 @@
-const fetch = require('node-fetch');
+// Importar dependencias
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
 
-module.exports = async (req, res) => {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+// Middleware para parsear el cuerpo de las solicitudes JSON
+app.use(bodyParser.json());
+
+// Clave maestra proporcionada por Global Foodsoft
+const MASTER_KEY = 'e6fIguVkyG5xtT3BYGMI4rfm9iVt24YJ'; // Reemplaza con tu clave maestra
+
+// Endpoint para recibir notificaciones de nuevos pedidos
+app.post('/api/new-order', (req, res) => {
+  // Verificar la clave maestra
+  const authHeader = req.headers['authorization'];
+  if (authHeader !== MASTER_KEY) {
+    return res.status(403).json({ error: 'Invalid authorization token' });
   }
 
-  const url = 'https://pos.globalfoodsoft.com/pos/order';
-  const headers = {
-    'Authorization': req.headers['authorization'] || '2poftdDnKvf3AhQTpIbtJDynhaO8rLCN', // Token proporcionado
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Glf-Api-Version': '2',
-    'Server-Key': 'NyMr1UvegT5gqM64Mb', // Server-Key requerido
-  };
+  // Obtener los datos del pedido
+  const order = req.body;
 
-  console.log('Enviando solicitud con headers:', headers); // Depuración
-  console.log('Cuerpo de la solicitud:', req.body); // Depuración
-
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(req.body),
-    });
-    const data = await response.text();
-    console.log('Respuesta de la API:', data); // Depuración
-    res.status(response.status).send(data);
-  } catch (error) {
-    console.error('Error en el servidor:', error);
-    res.status(500).json({ 
-      error: { 
-        code: '500', 
-        message: 'A server error has occurred', 
-        details: error.message 
-      } 
-    });
+  // Verificar si el pedido ya fue procesado (evitar duplicados)
+  if (isOrderProcessed(order.order_id)) {
+    return res.status(200).json({ message: 'Order already processed' });
   }
-};
+
+  // Procesar el pedido
+  processOrder(order);
+
+  // Responder dentro de 15 segundos
+  res.status(200).json({ message: 'Order received and processed' });
+});
+
+// Función para verificar si el pedido ya fue procesado
+function isOrderProcessed(orderId) {
+  // Lógica para verificar en la base de datos
+  // Por ejemplo, puedes usar una base de datos como MongoDB, PostgreSQL, etc.
+  // Aquí se simula una verificación básica.
+  return false; // Cambiar según tu implementación
+}
+
+// Función para procesar el pedido
+function processOrder(order) {
+  // Lógica para procesar el pedido
+  // Por ejemplo, guardar en una base de datos, enviar notificaciones, etc.
+  console.log('Processing order:', order);
+}
+
+// Iniciar el servidor
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
