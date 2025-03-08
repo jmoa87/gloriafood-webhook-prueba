@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
 
   const url = 'https://pos.globalfoodsoft.com/pos/order';
   const headers = {
-    'Authorization': req.headers['authorization'] || 'mp4xvco43uGl5yZ88', // Usa el token recibido o el default
+    'Authorization': req.headers['authorization'] || 'E6rNYi3arcDrXre3j', // Usa el token recibido o el default
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Glf-Api-Version': '2',
