@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Glf-Api-Version': '2',
-    'Server-Key': 'K6N7syrnfKRECLPf4knJQeBcLuYJJpgfv', // Server-Key requerido
+    'Server-Key': 'NyMr1UvegT5gqM64Mb', // Server-Key requerido
   };
 
   console.log('Enviando solicitud con headers:', headers); // Depuración
