@@ -1,26 +1,24 @@
-// Importar dependencias
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 
-// Middleware para parsear el cuerpo de las solicitudes JSON
-app.use(bodyParser.json());
+app.use(bodyParser.json()); // Para manejar JSON
+app.use(bodyParser.xml());  // Para manejar XML (necesitas el paquete `body-parser-xml`)
 
-// Clave maestra proporcionada por Global Foodsoft
-const MASTER_KEY = 'e6fIguVkyG5xtT3BYGMI4rfm9iVt24YJ'; // Reemplaza con tu clave maestra
+const MASTER_KEY = 'e6fIguVkyG5xtT3BYGMI4rfm9iVt24YJ'; // Clave maestra proporcionada por Global Foodsoft
 
-// Endpoint para recibir notificaciones de nuevos pedidos
-app.post('/api/new-order', (req, res) => {
-  // Verificar la clave maestra
+// Endpoint para recibir notificaciones
+app.post('/integration/orderingsystem', (req, res) => {
   const authHeader = req.headers['authorization'];
+
+  // Verificar la clave maestra
   if (authHeader !== MASTER_KEY) {
     return res.status(403).json({ error: 'Invalid authorization token' });
   }
 
-  // Obtener los datos del pedido
-  const order = req.body;
+  const order = req.body; // Datos del pedido
 
-  // Verificar si el pedido ya fue procesado (evitar duplicados)
+  // Verificar si el pedido ya fue procesado
   if (isOrderProcessed(order.order_id)) {
     return res.status(200).json({ message: 'Order already processed' });
   }
@@ -35,20 +33,15 @@ app.post('/api/new-order', (req, res) => {
 // Función para verificar si el pedido ya fue procesado
 function isOrderProcessed(orderId) {
   // Lógica para verificar en la base de datos
-  // Por ejemplo, puedes usar una base de datos como MongoDB, PostgreSQL, etc.
-  // Aquí se simula una verificación básica.
   return false; // Cambiar según tu implementación
 }
 
 // Función para procesar el pedido
 function processOrder(order) {
   // Lógica para procesar el pedido
-  // Por ejemplo, guardar en una base de datos, enviar notificaciones, etc.
   console.log('Processing order:', order);
 }
 
-// Iniciar el servidor
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(3000, () => {
+  console.log('Server running on http://localhost:3000');
 });
