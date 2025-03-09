@@ -1,46 +1,32 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
+from flask import Flask, request, jsonify
+import time
 
-app.use(bodyParser.json()); // Para manejar JSON
+app = Flask(__name__)
 
-const MASTER_KEY = 'e6fIguVkyG5xtT3BYGMI4rfm9iVt24YJ'; // Clave maestra proporcionada por Global Foodsoft
+# Clave maestra proporcionada por Global Foodsoft
+MASTER_KEY = "e6fIguVkyG5xtT3BYGMI4rfm9iVt24YJ"
 
-// Endpoint para recibir notificaciones
-app.post('/integration/orderingsystem', (req, res) => {
-  const authHeader = req.headers['authorization'];
+@app.route('/integration/orderingsystem', methods=['POST'])
+def handle_order():
+    # Verificar la clave de autorización
+    auth_header = request.headers.get('Authorization')
+    if auth_header != MASTER_KEY:
+        return jsonify({"error": "Unauthorized"}), 401
 
-  // Verificar la clave maestra
-  if (authHeader !== MASTER_KEY) {
-    return res.status(403).json({ error: 'Invalid authorization token' });
-  }
+    # Obtener el payload JSON
+    payload = request.json
 
-  const order = req.body; // Datos del pedido en JSON
+    # Procesar los pedidos
+    for order in payload.get('orders', []):
+        restaurant_key = order.get('restaurant_key')
+        order_id = order.get('id')
+        print(f"Procesando pedido {order_id} para el restaurante {restaurant_key}")
 
-  // Verificar si el pedido ya fue procesado
-  if (isOrderProcessed(order.order_id)) {
-    return res.status(200).json({ message: 'Order already processed' });
-  }
+        # Aquí puedes agregar lógica para asignar el pedido al restaurante correcto
+        # y guardar la información en tu base de datos.
 
-  // Procesar el pedido
-  processOrder(order);
+    # Responder con éxito
+    return jsonify({"status": "success"}), 200
 
-  // Responder dentro de 15 segundos
-  res.status(200).json({ message: 'Order received and processed' });
-});
-
-// Función para verificar si el pedido ya fue procesado
-function isOrderProcessed(orderId) {
-  // Lógica para verificar en la base de datos
-  return false; // Cambiar según tu implementación
-}
-
-// Función para procesar el pedido
-function processOrder(order) {
-  // Lógica para procesar el pedido
-  console.log('Processing order:', order);
-}
-
-app.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
-});
+if __name__ == '__main__':
+    app.run(ssl_context='adhoc')  # Usar HTTPS en desarrollo (no recomendado para producción)
