@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 # Clave maestra proporcionada por Global Foodsoft
-MASTER_KEY = "e6fIguVkyG5xtT3BYGMI4rfm9iVt24YJ"
+MASTER_KEY = "kQ6vefGxDHlDGJDplJ"
 
 @app.route('/integration/orderingsystem', methods=['POST'])
 def handle_order():
